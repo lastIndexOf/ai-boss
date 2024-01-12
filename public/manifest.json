@@ -10,7 +10,11 @@
   },
 
   "action": {
-    "default_icon": "icon.png",
+    "default_icon": {
+      "16": "ai-boss.png",
+      "48": "ai-boss.png",
+      "128": "ai-boss.png"
+    },
     "default_popup": "popup.html"
   },
 

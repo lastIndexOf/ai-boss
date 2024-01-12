@@ -83,7 +83,7 @@ export const render = (status: RunningStatus) => {
       container.innerHTML = `<div style="width: 100%; height: 100%; position: relative;">
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
       ${loadingSvg}
-      <div class="dot-anim" style="margin-top: 0; width: 280px; color: white">正在根据职位描述生成问候语， 可能需要 10 - 30 秒</div>
+      <div class="dot-anim" style="margin-top: 0; width: 360px; color: white">正在根据职位描述生成问候语， 可能需要 10 - 30 秒</div>
     </div>
 
     <style>

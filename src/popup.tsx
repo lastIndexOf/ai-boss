@@ -14,11 +14,13 @@ import "@fontsource/roboto/700.css";
 import {
   BOSS_CHAT_BOX,
   BOSS_FIND_JOB_URL,
+  BOSS_HOST,
   BOSS_LOGIN_URL,
   BOSS_URLS,
   IS_RUNNING,
 } from "./common/consts";
 import { FindJobExtensionMessageType } from "./common/types";
+import { useExtension } from "./popup/utils";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -56,6 +58,7 @@ function a11yProps(index: number) {
 const Popup = () => {
   const [value, setValue] = useState(0);
   const [running, setRunning] = useState(false);
+  const { showExtension } = useExtension();
 
   useEffect(() => {
     const getIsRunning = async () => {
@@ -103,24 +106,30 @@ const Popup = () => {
 
   return (
     <div style={{ width: "345px", margin: 0, padding: 0, marginBottom: 20 }}>
-      <Box sx={{ width: "100%" }}>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            aria-label="basic tabs example"
-          >
-            <Tab label="设置" {...a11yProps(0)} />
-            <Tab label="开始" {...a11yProps(1)} />
-          </Tabs>
+      {showExtension ? (
+        <Box sx={{ width: "100%" }}>
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="basic tabs example"
+            >
+              <Tab label="设置" {...a11yProps(0)} />
+              <Tab label="开始" {...a11yProps(1)} />
+            </Tabs>
+          </Box>
+          <CustomTabPanel value={value} index={0}>
+            <Settings />
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={1}>
+            <Workflow run={run} running={running} />
+          </CustomTabPanel>
         </Box>
-        <CustomTabPanel value={value} index={0}>
-          <Settings />
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={1}>
-          <Workflow run={run} running={running} />
-        </CustomTabPanel>
-      </Box>
+      ) : (
+        <Box sx={{ width: "100%", textAlign: "center" }}>
+          请在 Boss 直聘站点启用此插件
+        </Box>
+      )}
     </div>
   );
 };
@@ -152,6 +161,10 @@ const startAutoFindJobProcess = ({
     } else if (url?.startsWith(BOSS_CHAT_BOX)) {
       chrome.tabs.sendMessage(tabId, {
         type: FindJobExtensionMessageType.StartChat,
+      });
+    } else if (url?.startsWith(BOSS_HOST)) {
+      chrome.tabs.sendMessage(tabId, {
+        type: FindJobExtensionMessageType.OpenRecommend,
       });
     } else {
       console.info("not in boss zhipin");

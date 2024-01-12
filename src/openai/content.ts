@@ -89,10 +89,16 @@ export const uploadResume = () => {
     _input.accept = ".pdf, .doc, .docx, .txt, .png, .jpg, jpeg";
     document.body.appendChild(_input);
 
+    _input.onfocus = () => {
+      console.info("onfocus clicked");
+    };
+
     _input.onchange = (e) => {
       const file = (e.target as any).files?.[0];
 
       if (file) {
+        render(RunningStatus.Uploading);
+
         // eslint-disable-next-line node/no-unsupported-features/node-builtins, node/prefer-global/url
         const blobUrl = URL.createObjectURL(file);
 

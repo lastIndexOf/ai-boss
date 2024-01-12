@@ -6,11 +6,13 @@ export enum FindJobExtensionMessageType {
   StartFindJob = "start_find_job",
   StartLogin = "start_login",
   StartChat = "start_chat",
-  Stop = "stop",
   Render = "render",
   GetKey = "get_key",
   SetKey = "set_key",
   Log = "log",
+  OpenRecommend = "open_recommend",
+  Reset = "reset",
+  Stop = "stop",
 }
 
 export enum OpenAIMessageType {
@@ -20,6 +22,12 @@ export enum OpenAIMessageType {
   Chat = "chat",
   ApiKeyError = "api_key_error",
   Error = "error",
+}
+
+export enum OpenAIModel {
+  Gpt3dot5 = "gpt-3.5-turbo-1106",
+  Gpt4 = "gpt-4",
+  Gpt4Turbo = "gpt-4-1106-preview",
 }
 
 export enum RunningStatus {
