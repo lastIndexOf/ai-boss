@@ -1,19 +1,19 @@
-import { MASK_ID } from '../common/consts';
-import { RunningStatus } from '../common/types';
-import { loadingSvg } from './loading';
+import { MASK_ID } from "../common/consts";
+import { RunningStatus } from "../common/types";
+import { loadingSvg } from "./loading";
 
 export const preRender = () => {
-  const container = document.createElement('div');
+  const container = document.createElement("div");
   container.id = MASK_ID;
 
-  container.style.position = 'fixed';
-  container.style.top = '0';
-  container.style.left = '0';
-  container.style.width = '100%';
-  container.style.height = '100%';
-  container.style.zIndex = '999999';
-  container.style.backgroundColor = 'rgba(0,0,0,0.3)';
-  container.style.display = 'none';
+  container.style.position = "fixed";
+  container.style.top = "0";
+  container.style.left = "0";
+  container.style.width = "100%";
+  container.style.height = "100%";
+  container.style.zIndex = "999999";
+  container.style.backgroundColor = "rgba(0,0,0,0.3)";
+  container.style.display = "none";
 
   container.innerHTML = ``;
 
@@ -25,10 +25,10 @@ export const render = (status: RunningStatus) => {
 
   switch (status) {
     case RunningStatus.Idle:
-      container.style.display = 'none';
+      container.style.display = "none";
       break;
     case RunningStatus.Running:
-      container.style.display = 'block';
+      container.style.display = "block";
       container.innerHTML = `<div style="width: 100%; height: 100%; position: relative;">
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
       ${loadingSvg}
@@ -53,7 +53,7 @@ export const render = (status: RunningStatus) => {
 </div>`;
       break;
     case RunningStatus.Uploading:
-      container.style.display = 'block';
+      container.style.display = "block";
       container.innerHTML = `<div style="width: 100%; height: 100%; position: relative;">
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
       ${loadingSvg}
@@ -79,7 +79,7 @@ export const render = (status: RunningStatus) => {
 </div>`;
       break;
     case RunningStatus.Generating:
-      container.style.display = 'block';
+      container.style.display = "block";
       container.innerHTML = `<div style="width: 100%; height: 100%; position: relative;">
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
       ${loadingSvg}

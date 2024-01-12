@@ -1,5 +1,5 @@
 export const sleep = (timer: number) =>
-  new Promise(resolve => setTimeout(resolve, timer));
+  new Promise((resolve) => setTimeout(resolve, timer));
 
 export const queryUntilNotNull = async (selector: string) => {
   let res = document.querySelector(selector);

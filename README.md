@@ -1,70 +1,15 @@
-# Chrome Extension TypeScript Starter
+# AI Boss
 
-![build](https://github.com/chibat/chrome-extension-typescript-starter/workflows/build/badge.svg)
+让 gpt 根据你的简历和预期的职位介绍自动生成问候语，并自动投递简历的浏览器插件。灵感来自 [auto_job__find__chatgpt__rpa](https://github.com/Frrrrrrrrank/auto_job__find__chatgpt__rpa)
 
-Chrome Extension, TypeScript and Visual Studio Code
+## TODO
 
-## Prerequisites
-
-* [node + npm](https://nodejs.org/) (Current Version)
-
-## Option
-
-* [Visual Studio Code](https://code.visualstudio.com/)
-
-## Includes the following
-
-* TypeScript
-* Webpack
-* React
-* Jest
-* Example Code
-    * Chrome Storage
-    * Options Version 2
-    * content script
-    * count up badge number
-    * background
-
-## Project Structure
-
-* src/typescript: TypeScript source files
-* src/assets: static files
-* dist: Chrome Extension directory
-* dist/js: Generated JavaScript files
-
-## Setup
-
-```
-npm install
-```
-
-## Import as Visual Studio Code project
-
-...
-
-## Build
-
-```
-npm run build
-```
-
-## Build in watch mode
-
-### terminal
-
-```
-npm run watch
-```
-
-### Visual Studio Code
-
-Run watch mode.
-
-type `Ctrl + Shift + B`
-
-## Load extension to chrome
-
-Load `dist` directory
-
-## Test
-`npx jest` or `npm run test`
+- [ ] 增加 OpenAI Model 设置选项
+- [ ] 增设职位筛选条件，让用户添加的选项
+- [ ] 传简历的时候如果刷新了页面，那么上传简历的状态将一直保留，需要一个重置的按钮
+- [ ] 传简历如果点了取消，也会一直loading
+- [ ] 如果用户不是从 boss 推荐岗位的页面进来的，那么会有未定义的行为，兼容一下
+- [ ] 新增从外站打开的逻辑
+- [ ] 新增从 boss 内站打开的逻辑
+- [ ] 需要预设岗位，不然无法自动投递，现在没有提示，增加一个提示，然后自动跳转
+- [ ] more

@@ -1,15 +1,15 @@
-import { BOSS_HOST } from '../common/consts';
+import { BOSS_HOST } from "../common/consts";
 import {
   FindJobExtensionMessageType,
   OpenAIMessageType,
-} from '../common/types';
+} from "../common/types";
 
 export const sendMessage = (
   type: FindJobExtensionMessageType | OpenAIMessageType,
-  data?: any,
+  data?: any
 ) => {
-  return new Promise(resolve => {
-    chrome.tabs.query({ currentWindow: true, active: true }, async tabs => {
+  return new Promise((resolve) => {
+    chrome.tabs.query({ currentWindow: true, active: true }, async (tabs) => {
       for (const tab of tabs) {
         const { id, url } = tab;
 
@@ -20,9 +20,9 @@ export const sendMessage = (
               type,
               data,
             },
-            response => {
+            (response) => {
               resolve(response);
-            },
+            }
           );
 
           break;

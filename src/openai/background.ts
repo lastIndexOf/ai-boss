@@ -1,24 +1,24 @@
-import OpenAI, { toFile } from 'openai';
+import OpenAI, { toFile } from "openai";
 import {
   BOSS_HOST,
   OPENAI_API_KEY,
   PRIVATE_ASSISTANT,
   PRIVATE_ASSISTANT_RESUME_NAME,
   PRIVATE_ASSISTANT_RESUME_UPDATED_AT,
-} from '../common/consts';
+} from "../common/consts";
 import {
   FindJobExtensionMessageType,
   OpenAIMessageType,
-} from '../common/types';
-import { sleep } from '../common/utils';
-import { assistant_instructions } from './prompts';
+} from "../common/types";
+import { sleep } from "../common/utils";
+import { assistant_instructions } from "./prompts";
 
 export const sendMessage = (
   type: FindJobExtensionMessageType | OpenAIMessageType,
-  data?: any,
+  data?: any
 ) => {
-  return new Promise(resolve => {
-    chrome.tabs.query({ currentWindow: true, active: true }, async tabs => {
+  return new Promise((resolve) => {
+    chrome.tabs.query({ currentWindow: true, active: true }, async (tabs) => {
       for (const tab of tabs) {
         const { id, url } = tab;
 
@@ -29,9 +29,9 @@ export const sendMessage = (
               type,
               data,
             },
-            response => {
+            (response) => {
               resolve(response);
-            },
+            }
           );
 
           break;
@@ -51,7 +51,7 @@ const getClient = async () => {
         ],
       });
     } catch (err) {
-      console.error('create openai client error: ', err);
+      console.error("create openai client error: ", err);
       sendMessage(OpenAIMessageType.ApiKeyError);
       throw err;
     }
@@ -85,7 +85,7 @@ const createAssistant = async () => {
   const data = await chrome.storage.local.get(PRIVATE_ASSISTANT);
 
   if (data[PRIVATE_ASSISTANT]) {
-    console.info('Loaded existing assistant ID.');
+    console.info("Loaded existing assistant ID.");
     return {
       type: OpenAIMessageType.AssistantId,
       data: data[PRIVATE_ASSISTANT],
@@ -93,7 +93,7 @@ const createAssistant = async () => {
   }
 
   // 没有简历，需要上传简历
-  console.info('Not assistant found, need upload resume');
+  console.info("Not assistant found, need upload resume");
   return {
     type: OpenAIMessageType.UploadResume,
   };
@@ -105,16 +105,16 @@ const uploadResume = async ({ url, name }: { name: string; url: string }) => {
     const file = await (
       await getClient()
     ).files.create({
-      file: await toFile(res, 'my_resume.pdf'),
-      purpose: 'assistants',
+      file: await toFile(res, "my_resume.pdf"),
+      purpose: "assistants",
     });
 
     const assistant = await (
       await getClient()
     ).beta.assistants.create({
       instructions: assistant_instructions,
-      model: 'gpt-3.5-turbo-1106',
-      tools: [{ type: 'retrieval' }],
+      model: "gpt-3.5-turbo-1106",
+      tools: [{ type: "retrieval" }],
       file_ids: [file.id],
     });
 
@@ -129,7 +129,7 @@ const uploadResume = async ({ url, name }: { name: string; url: string }) => {
       data: assistant.id,
     };
   } catch (err: any) {
-    console.error('upload resume error: ', err.toString());
+    console.error("upload resume error: ", err.toString());
     client = null;
     return {
       type: OpenAIMessageType.Error,
@@ -153,7 +153,7 @@ const chat = async ({
     extractThreadId = await createThread();
     if (!extractThreadId) {
       client = null;
-      return { type: OpenAIMessageType.Error, data: 'Failed to create thread' };
+      return { type: OpenAIMessageType.Error, data: "Failed to create thread" };
     }
   }
 
@@ -162,7 +162,7 @@ const chat = async ({
       await getClient()
     ).beta.threads.messages.create(extractThreadId, {
       content: userInput,
-      role: 'user',
+      role: "user",
     });
     const run = await (
       await getClient()
@@ -177,9 +177,9 @@ const chat = async ({
         await getClient()
       ).beta.threads.runs.retrieve(extractThreadId, run.id);
 
-      if (runStatus.status === 'completed') {
+      if (runStatus.status === "completed") {
         break;
-      } else if (runStatus.status === 'requires_action') {
+      } else if (runStatus.status === "requires_action") {
         await sleep(1000);
       }
     }
@@ -189,13 +189,13 @@ const chat = async ({
     ).beta.threads.messages.list(extractThreadId);
     const assistatantMessage = (messages.data[0].content[0] as any).text.value;
 
-    const formattedMessage = assistatantMessage.replace('\n', ' ');
+    const formattedMessage = assistatantMessage.replace("\n", " ");
 
     console.info(`问候：\n${formattedMessage}\n\n`);
 
     return { type: OpenAIMessageType.Chat, data: formattedMessage };
   } catch (err: any) {
-    console.error('An error occurred: ', err);
+    console.error("An error occurred: ", err);
     client = null;
     return { type: OpenAIMessageType.Error, data: err.message };
   }
@@ -207,7 +207,7 @@ const createThread = async () => {
     return response.id;
   } catch (err) {
     client = null;
-    console.error('Error creating thread: ', err);
-    return '';
+    console.error("Error creating thread: ", err);
+    return "";
   }
 };

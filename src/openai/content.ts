@@ -1,15 +1,15 @@
-import { IS_UPLOADING_RESUME } from '../common/consts';
-import { OpenAIMessageType, RunningStatus } from '../common/types';
-import { render } from '../core/content_ui';
+import { IS_UPLOADING_RESUME } from "../common/consts";
+import { OpenAIMessageType, RunningStatus } from "../common/types";
+import { render } from "../core/content_ui";
 
 export const initPrelude: () => Promise<{
   assistantId: string;
 }> = async () => {
-  const assistantId: any = await createAssistant().catch(err => {
+  const assistantId: any = await createAssistant().catch((err) => {
     console.error(err);
     // eslint-disable-next-line no-alert
     alert(
-      `创建 openai 助手失败，清刷新页面重试\nError: ${err.message.toString()}`,
+      `创建 openai 助手失败，清刷新页面重试\nError: ${err.message.toString()}`
     );
 
     throw err;
@@ -21,10 +21,10 @@ export const initPrelude: () => Promise<{
 export const chat = async (
   userInput: string,
   assistantId: string,
-  threadId = '',
+  threadId = ""
 ) => {
   return new Promise((resolve, reject) => {
-    console.info('getting response from openai');
+    console.info("getting response from openai");
 
     chrome.runtime.sendMessage(
       {
@@ -41,15 +41,15 @@ export const chat = async (
           case OpenAIMessageType.Error: {
             // eslint-disable-next-line no-alert
             alert(
-              `OpenAI 调用失败，请打开插件 「设置」 面板确认正确填入了 OpenAI API Key，且本地代理服务器没有异常。\n错误：${response.data}`,
+              `OpenAI 调用失败，请打开插件 「设置」 面板确认正确填入了 OpenAI API Key，且本地代理服务器没有异常。\n错误：${response.data}`
             );
             reject(new Error(response.data));
             break;
           }
           default:
-            reject(new Error('chat failed'));
+            reject(new Error("chat failed"));
         }
-      },
+      }
     );
   });
 };
@@ -73,23 +73,23 @@ const createAssistant = () => {
           }
           default:
         }
-      },
+      }
     );
   });
 };
 
 export const uploadResume = () => {
-  localStorage.setItem(IS_UPLOADING_RESUME, '1');
+  localStorage.setItem(IS_UPLOADING_RESUME, "1");
 
   return new Promise((resolve, reject) => {
-    const _input = document.createElement('input');
-    _input.type = 'file';
+    const _input = document.createElement("input");
+    _input.type = "file";
     _input.multiple = false;
     _input.hidden = true;
-    _input.accept = '.pdf, .doc, .docx, .txt, .png, .jpg, jpeg';
+    _input.accept = ".pdf, .doc, .docx, .txt, .png, .jpg, jpeg";
     document.body.appendChild(_input);
 
-    _input.onchange = e => {
+    _input.onchange = (e) => {
       const file = (e.target as any).files?.[0];
 
       if (file) {
@@ -105,7 +105,7 @@ export const uploadResume = () => {
             },
           },
           (response: any) => {
-            localStorage.setItem(IS_UPLOADING_RESUME, '0');
+            localStorage.setItem(IS_UPLOADING_RESUME, "0");
 
             render(RunningStatus.Idle);
 
@@ -114,14 +114,14 @@ export const uploadResume = () => {
             } else {
               // eslint-disable-next-line no-alert
               alert(
-                `上传简历失败，请打开插件 「设置」 面板确认正确填入了 OpenAI API Key，且本地代理服务器没有异常。\n错误: ${response.data}`,
+                `上传简历失败，请打开插件 「设置」 面板确认正确填入了 OpenAI API Key，且本地代理服务器没有异常。\n错误: ${response.data}`
               );
-              reject(new Error('upload resume failed'));
+              reject(new Error("upload resume failed"));
             }
-          },
+          }
         );
       } else {
-        reject(new Error('no file found'));
+        reject(new Error("no file found"));
       }
     };
 

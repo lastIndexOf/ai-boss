@@ -1,13 +1,13 @@
-import { chat, initPrelude } from '../openai/content';
+import { chat, initPrelude } from "../openai/content";
 import {
   BOSS_JOB_LABEL,
   INSTURCTION_LETTER,
   JOB_INDEX,
   JOB_PAGE_SIZE,
-} from '../common/consts';
-import { jumpToPage, queryUntilNotNull, sleep } from '../common/utils';
-import { RunningStatus } from '../common/types';
-import { render } from './content_ui';
+} from "../common/consts";
+import { jumpToPage, queryUntilNotNull, sleep } from "../common/utils";
+import { RunningStatus } from "../common/types";
+import { render } from "./content_ui";
 
 let start = false;
 
@@ -17,14 +17,14 @@ export const startFindJob = async () => {
   }
 
   start = true;
-  const loginBtn = document.querySelector('#header .header-login-btn');
+  const loginBtn = document.querySelector("#header .header-login-btn");
 
   if (loginBtn) {
     start = false;
     return (loginBtn as any).click();
   }
 
-  console.info('start auto find job');
+  console.info("start auto find job");
 
   doStartFindJob();
   return -1;
@@ -39,18 +39,18 @@ export const startChat = async () => {
   const response = localStorage.getItem(INSTURCTION_LETTER);
 
   if (response) {
-    const chatBox = await queryUntilNotNull('#chat-input');
+    const chatBox = await queryUntilNotNull("#chat-input");
 
     (chatBox as any).innerHTML = response;
 
     await sleep(100);
-    const inputEvent = new Event('input', {
+    const inputEvent = new Event("input", {
       bubbles: true,
       cancelable: true,
     });
-    const enterEvent = new KeyboardEvent('keydown', {
-      key: 'Enter',
-      code: 'Enter',
+    const enterEvent = new KeyboardEvent("keydown", {
+      key: "Enter",
+      code: "Enter",
       keyCode: 13,
       charCode: 13,
       bubbles: true,
@@ -60,7 +60,7 @@ export const startChat = async () => {
     (chatBox as any).dispatchEvent(enterEvent);
     await sleep(100);
 
-    const jobIndex = Number(localStorage.getItem(JOB_INDEX) || '1');
+    const jobIndex = Number(localStorage.getItem(JOB_INDEX) || "1");
     localStorage.setItem(JOB_INDEX, `${jobIndex + 1}`);
     localStorage.removeItem(INSTURCTION_LETTER);
     await sleep(500);
@@ -73,7 +73,7 @@ export const startChat = async () => {
 const doStartFindJob = async () => {
   const { assistantId } = await initPrelude();
 
-  const jobIndex = Number(localStorage.getItem(JOB_INDEX) || '1');
+  const jobIndex = Number(localStorage.getItem(JOB_INDEX) || "1");
 
   await sleep(1500);
   selectDropdownOption();
@@ -91,7 +91,7 @@ const doStartFindJob = async () => {
 
     await sleep(1000);
     const contactBtn = await queryUntilNotNull(
-      `#wrap > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > div > div:nth-child(1) > div:nth-child(2) > a:nth-child(2)`,
+      `#wrap > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > div > div:nth-child(1) > div:nth-child(2) > a:nth-child(2)`
     );
     (contactBtn as any).click();
   }
@@ -99,7 +99,7 @@ const doStartFindJob = async () => {
 
 const selectDropdownOption = () => {
   const triggerElements: any = document.querySelectorAll(
-    '.recommend-job-btn.has-tooltip',
+    ".recommend-job-btn.has-tooltip"
   );
 
   let found = false;
@@ -124,35 +124,35 @@ const selectDropdownOption = () => {
   }
 
   // eslint-disable-next-line no-alert
-  alert('请先添加期望职位');
+  alert("请先添加期望职位");
 
-  console.info('not found');
+  console.info("not found");
 };
 
 const getJobDescriptionByIndex = async (jobIndex: number) => {
   // 让它加载出职位列表再换页面
   await queryUntilNotNull(
-    '#wrap > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > div > div:nth-child(2) > p',
+    "#wrap > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > div > div:nth-child(2) > p"
   );
 
   const page = Math.ceil(jobIndex / JOB_PAGE_SIZE);
   if (page !== 1) {
     await jumpToPage(
-      (await queryUntilNotNull('.job-recommend-main')) as HTMLDivElement,
-      page,
+      (await queryUntilNotNull(".job-recommend-main")) as HTMLDivElement,
+      page
     );
   }
 
   try {
     const jobSelector = await queryUntilNotNull(
-      `#wrap > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(1) > ul > li:nth-child(${jobIndex})`,
+      `#wrap > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(1) > ul > li:nth-child(${jobIndex})`
     );
     (jobSelector as any).click();
 
     await sleep(100);
 
     const descriptionSelector = await queryUntilNotNull(
-      '#wrap > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > div > div:nth-child(2) > p',
+      "#wrap > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > div > div:nth-child(2) > p"
     );
     return (descriptionSelector as any).innerText;
   } catch (err) {
@@ -167,7 +167,7 @@ export const startLogin = () => {
   }
 
   start = true;
-  const wxLoginBtn = document.querySelector('.wx-login-area .wx-login-btn');
+  const wxLoginBtn = document.querySelector(".wx-login-area .wx-login-btn");
 
   if (wxLoginBtn) {
     (wxLoginBtn as any).click();

@@ -1,11 +1,11 @@
-import { startChat, startFindJob, startLogin } from './core/find_jobs';
-import { uploadResume } from './openai/content';
+import { startChat, startFindJob, startLogin } from "./core/find_jobs";
+import { uploadResume } from "./openai/content";
 import {
   FindJobExtensionMessageType,
   OpenAIMessageType,
   RunningStatus,
-} from './common/types';
-import { preRender, render } from './core/content_ui';
+} from "./common/types";
+import { preRender, render } from "./core/content_ui";
 
 const getKey = async (key: string) => {
   return {
@@ -56,7 +56,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     case OpenAIMessageType.Error:
       // eslint-disable-next-line no-alert
       alert(
-        `OpenAI 调用失败，请打开插件 「设置」 面板确认正确填入了 OpenAI API Key，且本地代理服务器没有异常。\n错误：${msg.data}`,
+        `OpenAI 调用失败，请打开插件 「设置」 面板确认正确填入了 OpenAI API Key，且本地代理服务器没有异常。\n错误：${msg.data}`
       );
       return true;
     case FindJobExtensionMessageType.Stop:

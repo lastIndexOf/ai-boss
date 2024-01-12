@@ -1,15 +1,15 @@
-import React, { FormEventHandler, useEffect, useMemo, useState } from 'react';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Box from '@mui/material/Box';
-import { OPENAI_API_KEY } from '../common/consts';
-import { Resume } from './resume';
+import React, { FormEventHandler, useEffect, useMemo, useState } from "react";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Box from "@mui/material/Box";
+import { OPENAI_API_KEY } from "../common/consts";
+import { Resume } from "./resume";
 
 export const Settings = () => {
-  const [apiKey, setApiKey] = useState('');
+  const [apiKey, setApiKey] = useState("");
   const [canSave, setCanSave] = useState(false);
 
   const hasApiKey = useMemo(() => {
@@ -28,7 +28,7 @@ export const Settings = () => {
     getKey();
   }, []);
 
-  const onInput: FormEventHandler<HTMLInputElement> = e => {
+  const onInput: FormEventHandler<HTMLInputElement> = (e) => {
     setApiKey((e.target as any).value);
     setCanSave(true);
   };
@@ -40,12 +40,12 @@ export const Settings = () => {
 
   return (
     <div>
-      <Card variant="outlined" sx={{ marginTop: '17px' }}>
+      <Card variant="outlined" sx={{ marginTop: "17px" }}>
         <CardContent>
           <Typography
             fontSize={17}
             variant="h6"
-            style={{ marginBottom: '12px' }}
+            style={{ marginBottom: "12px" }}
           >
             OpenAI 设置
           </Typography>
@@ -59,7 +59,7 @@ export const Settings = () => {
             onInput={onInput}
           />
 
-          <Box sx={{ padding: '17px 0 6px' }}>
+          <Box sx={{ padding: "17px 0 6px" }}>
             <Button
               variant="contained"
               disabled={!canSave}
@@ -70,7 +70,7 @@ export const Settings = () => {
             </Button>
           </Box>
 
-          <Typography fontSize={17} variant="h6" style={{ marginTop: '24px' }}>
+          <Typography fontSize={17} variant="h6" style={{ marginTop: "24px" }}>
             简历管理
           </Typography>
 

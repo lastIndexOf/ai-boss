@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { createRoot } from 'react-dom/client';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { Settings } from './popup/settings';
-import { Workflow } from './popup/workflow';
+import React, { useEffect, useState } from "react";
+import { createRoot } from "react-dom/client";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { Settings } from "./popup/settings";
+import { Workflow } from "./popup/workflow";
 
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 import {
   BOSS_CHAT_BOX,
   BOSS_FIND_JOB_URL,
   BOSS_LOGIN_URL,
   BOSS_URLS,
   IS_RUNNING,
-} from './common/consts';
-import { FindJobExtensionMessageType } from './common/types';
+} from "./common/consts";
+import { FindJobExtensionMessageType } from "./common/types";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -49,7 +49,7 @@ function CustomTabPanel(props: TabPanelProps) {
 function a11yProps(index: number) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
   };
 }
 
@@ -75,11 +75,11 @@ const Popup = () => {
   };
 
   const run = () => {
-    chrome.tabs.query({ currentWindow: true, active: true }, async tabs => {
+    chrome.tabs.query({ currentWindow: true, active: true }, async (tabs) => {
       for (const tab of tabs) {
         const { id, url } = tab;
 
-        if (id && url && BOSS_URLS.find(u => url?.startsWith(u))) {
+        if (id && url && BOSS_URLS.find((u) => url?.startsWith(u))) {
           const data = await chrome.storage.local.get(IS_RUNNING);
 
           if (!data[IS_RUNNING]) {
@@ -102,9 +102,9 @@ const Popup = () => {
   };
 
   return (
-    <div style={{ width: '345px', margin: 0, padding: 0, marginBottom: 20 }}>
-      <Box sx={{ width: '100%' }}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+    <div style={{ width: "345px", margin: 0, padding: 0, marginBottom: 20 }}>
+      <Box sx={{ width: "100%" }}>
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
             value={value}
             onChange={handleChange}
@@ -125,12 +125,12 @@ const Popup = () => {
   );
 };
 
-const root = createRoot(document.getElementById('root')!);
+const root = createRoot(document.getElementById("root")!);
 
 root.render(
   <React.StrictMode>
     <Popup />
-  </React.StrictMode>,
+  </React.StrictMode>
 );
 
 const startAutoFindJobProcess = ({
@@ -154,7 +154,7 @@ const startAutoFindJobProcess = ({
         type: FindJobExtensionMessageType.StartChat,
       });
     } else {
-      console.info('not in boss zhipin');
+      console.info("not in boss zhipin");
     }
   }
 };

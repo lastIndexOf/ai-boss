@@ -1,35 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import IconButton from '@mui/material/IconButton';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import LoadingButton from '@mui/lab/LoadingButton';
-import AccountBox from '@mui/icons-material/AccountBox';
-import DeleteIcon from '@mui/icons-material/Delete';
-import dayjs from 'dayjs';
+import React, { useEffect, useState } from "react";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import IconButton from "@mui/material/IconButton";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import LoadingButton from "@mui/lab/LoadingButton";
+import AccountBox from "@mui/icons-material/AccountBox";
+import DeleteIcon from "@mui/icons-material/Delete";
+import dayjs from "dayjs";
 import {
   IS_UPLOADING_RESUME,
   PRIVATE_ASSISTANT,
   PRIVATE_ASSISTANT_RESUME_NAME,
   PRIVATE_ASSISTANT_RESUME_UPDATED_AT,
-} from '../common/consts';
+} from "../common/consts";
 import {
   FindJobExtensionMessageType,
   OpenAIMessageType,
-} from '../common/types';
-import { sendMessage } from './utils';
+} from "../common/types";
+import { sendMessage } from "./utils";
 
 export const Resume = ({ hasApiKey }: { hasApiKey: boolean }) => {
-  const [, setAssistantId] = useState('');
-  const [resume, setResume] = useState('');
+  const [, setAssistantId] = useState("");
+  const [resume, setResume] = useState("");
   const [lastModified, setLastModified] = useState(Date.now());
   const [canUpload, setCanUpload] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -43,12 +43,12 @@ export const Resume = ({ hasApiKey }: { hasApiKey: boolean }) => {
     const { data }: any =
       (await sendMessage(
         FindJobExtensionMessageType.GetKey,
-        IS_UPLOADING_RESUME,
+        IS_UPLOADING_RESUME
       )) || {};
 
-    const isLoading = data === '1';
+    const isLoading = data === "1";
 
-    setLoading(data === '1');
+    setLoading(data === "1");
     if (isLoading) {
       setTimeout(() => {
         getIsLoading();
@@ -76,7 +76,7 @@ export const Resume = ({ hasApiKey }: { hasApiKey: boolean }) => {
     }
 
     setAssistantId(data[PRIVATE_ASSISTANT]);
-    setResume(data[PRIVATE_ASSISTANT_RESUME_NAME] || '');
+    setResume(data[PRIVATE_ASSISTANT_RESUME_NAME] || "");
     setLastModified(data[PRIVATE_ASSISTANT_RESUME_UPDATED_AT] || Date.now());
   };
 
@@ -93,8 +93,8 @@ export const Resume = ({ hasApiKey }: { hasApiKey: boolean }) => {
       PRIVATE_ASSISTANT_RESUME_UPDATED_AT,
     ]);
 
-    setAssistantId('');
-    setResume('');
+    setAssistantId("");
+    setResume("");
     setLastModified(Date.now());
     setCanUpload(true);
 
@@ -122,12 +122,12 @@ export const Resume = ({ hasApiKey }: { hasApiKey: boolean }) => {
       </ListItemAvatar>
       <ListItemText
         primary={resume}
-        secondary={dayjs(lastModified).format('YYYY-MM-DD HH:mm')}
+        secondary={dayjs(lastModified).format("YYYY-MM-DD HH:mm")}
       />
     </ListItem>
   );
   return (
-    <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+    <List sx={{ width: "100%", bgcolor: "background.paper" }}>
       {content}
       <ListItem>
         {loading ? (
