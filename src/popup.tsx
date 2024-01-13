@@ -6,11 +6,6 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Settings } from "./popup/settings";
 import { Workflow } from "./popup/workflow";
-
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
 import {
   BOSS_CHAT_BOX,
   BOSS_FIND_JOB_URL,
@@ -21,6 +16,11 @@ import {
 } from "./common/consts";
 import { FindJobExtensionMessageType } from "./common/types";
 import { useExtension } from "./popup/utils";
+
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
 interface TabPanelProps {
   children?: React.ReactNode;

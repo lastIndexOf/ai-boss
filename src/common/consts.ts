@@ -8,7 +8,7 @@ export const OPENAI_MODEL_NAME = "__OPENAI_MODEL_NAME__";
 export const IS_RUNNING = "__AUTO_FIND_JOB_IS_RUNNING__";
 export const IS_UPLOADING_RESUME = "__AUTO_FIND_JOB_IS_UPLOADING_RESUME__";
 
-export const INSTURCTION_LETTER = "__INSTURCTION_LETTER__";
+export const INSTRUCTION_LETTER = "__INSTRUCTION_LETTER__";
 export const JOB_INDEX = "__JOB_INDEX__";
 
 export const BOSS_HOST = "https://www.zhipin.com";

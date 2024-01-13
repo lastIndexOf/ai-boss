@@ -1,12 +1,12 @@
 import { chat, initPrelude } from "../openai/content";
 import {
   BOSS_JOB_LABEL,
-  INSTURCTION_LETTER,
+  INSTRUCTION_LETTER,
   JOB_INDEX,
   JOB_PAGE_SIZE,
 } from "../common/consts";
 import { jumpToPage, queryUntilNotNull, sleep } from "../common/utils";
-import { RunningStatus } from "../common/types";
+import { FindJobExtensionMessageType, RunningStatus } from "../common/types";
 import { render } from "./content_ui";
 
 let start = false;
@@ -17,11 +17,29 @@ export const startFindJob = async () => {
   }
 
   start = true;
-  const loginBtn = document.querySelector("#header .header-login-btn");
 
-  if (loginBtn) {
+  while (document.readyState !== "complete") {
+    await sleep(1000);
+  }
+
+  const rightArea = await Promise.race([
+    (async () => {
+      return {
+        type: "login",
+        ele: await queryUntilNotNull("#header .header-login-btn"),
+      };
+    })(),
+    (async () => {
+      return {
+        type: "profile",
+        ele: await queryUntilNotNull("#header .nav-figure"),
+      };
+    })(),
+  ]);
+
+  if (rightArea.type === "login") {
     start = false;
-    return (loginBtn as any).click();
+    return (rightArea.ele as any).click();
   }
 
   console.info("start auto find job");
@@ -36,7 +54,7 @@ export const startChat = async () => {
   }
 
   start = true;
-  const response = localStorage.getItem(INSTURCTION_LETTER);
+  const response = localStorage.getItem(INSTRUCTION_LETTER);
 
   if (response) {
     const chatBox = await queryUntilNotNull("#chat-input");
@@ -62,7 +80,7 @@ export const startChat = async () => {
 
     const jobIndex = Number(localStorage.getItem(JOB_INDEX) || "1");
     localStorage.setItem(JOB_INDEX, `${jobIndex + 1}`);
-    localStorage.removeItem(INSTURCTION_LETTER);
+    localStorage.removeItem(INSTRUCTION_LETTER);
     await sleep(500);
     history.back();
   }
@@ -76,28 +94,31 @@ const doStartFindJob = async () => {
   const jobIndex = Number(localStorage.getItem(JOB_INDEX) || "1");
 
   await sleep(1500);
-  selectDropdownOption();
-  await sleep(100);
+  if (await selectDropdownOption()) {
+    await sleep(100);
 
-  const jobDescription = await getJobDescriptionByIndex(jobIndex);
+    const jobDescription = await getJobDescriptionByIndex(jobIndex);
 
-  if (jobDescription) {
-    render(RunningStatus.Generating);
+    if (jobDescription) {
+      render(RunningStatus.Generating);
 
-    const response = await chat(jobDescription, assistantId as any);
-    localStorage.setItem(INSTURCTION_LETTER, response as string);
+      const input = `简历内容:\n${jobDescription}\n`;
 
-    render(RunningStatus.Running);
+      const response = await chat(input, assistantId as any);
+      localStorage.setItem(INSTRUCTION_LETTER, response as string);
 
-    await sleep(1000);
-    const contactBtn = await queryUntilNotNull(
-      `#wrap > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > div > div:nth-child(1) > div:nth-child(2) > a:nth-child(2)`
-    );
-    (contactBtn as any).click();
+      render(RunningStatus.Running);
+
+      await sleep(1000);
+      const contactBtn = await queryUntilNotNull(
+        `#wrap > div:nth-child(2) > div:nth-child(2) > div > div > div:nth-child(2) > div > div:nth-child(1) > div:nth-child(2) > a:nth-child(2)`
+      );
+      (contactBtn as any).click();
+    }
   }
 };
 
-const selectDropdownOption = () => {
+const selectDropdownOption = async () => {
   const triggerElements: any = document.querySelectorAll(
     ".recommend-job-btn.has-tooltip"
   );
@@ -114,19 +135,32 @@ const selectDropdownOption = () => {
   }
 
   if (found) {
-    return;
+    return true;
   }
 
   if (triggerElements.length) {
     found = true;
     triggerElements[0].click();
-    return;
+    return true;
   }
+
+  render(RunningStatus.Idle);
+
+  chrome.runtime.sendMessage({
+    type: FindJobExtensionMessageType.Stop,
+  });
 
   // eslint-disable-next-line no-alert
   alert("请先添加期望职位");
 
   console.info("not found");
+
+  const addExpectBtn = await queryUntilNotNull(
+    ".recommend-search-expect .add-expect-btn"
+  );
+  (addExpectBtn as any).click();
+
+  return false;
 };
 
 const getJobDescriptionByIndex = async (jobIndex: number) => {

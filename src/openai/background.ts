@@ -1,7 +1,9 @@
 import OpenAI, { toFile } from "openai";
 import {
   BOSS_HOST,
+  IS_RUNNING,
   OPENAI_API_KEY,
+  OPENAI_MODEL_NAME,
   PRIVATE_ASSISTANT,
   PRIVATE_ASSISTANT_RESUME_NAME,
   PRIVATE_ASSISTANT_RESUME_UPDATED_AT,
@@ -9,6 +11,7 @@ import {
 import {
   FindJobExtensionMessageType,
   OpenAIMessageType,
+  OpenAIModel,
 } from "../common/types";
 import { sleep } from "../common/utils";
 import { assistant_instructions } from "./prompts";
@@ -75,6 +78,10 @@ export const initPrelude = () => {
         chat(message.data).then(sendResponse);
         return true;
       }
+      case FindJobExtensionMessageType.Stop: {
+        chrome.storage.local.set({ [IS_RUNNING]: false });
+        return true;
+      }
       default:
         return true;
     }
@@ -109,11 +116,15 @@ const uploadResume = async ({ url, name }: { name: string; url: string }) => {
       purpose: "assistants",
     });
 
+    const model =
+      (await chrome.storage.local.get(OPENAI_MODEL_NAME))[OPENAI_MODEL_NAME] ||
+      OpenAIModel.Gpt3dot5;
+
     const assistant = await (
       await getClient()
     ).beta.assistants.create({
       instructions: assistant_instructions,
-      model: "gpt-3.5-turbo-1106",
+      model,
       tools: [{ type: "retrieval" }],
       file_ids: [file.id],
     });
